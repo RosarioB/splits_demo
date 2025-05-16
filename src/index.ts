@@ -5,11 +5,11 @@ import { base, baseSepolia } from 'viem/chains';
 import "dotenv/config";
 
 const requiredEnvVars = ['PRIVATE_KEY', 'RPC_URL', 'SPLITS_API_KEY'];
-for (const envVar of requiredEnvVars) {
+requiredEnvVars.forEach((envVar) => {
   if (!process.env[envVar]) {
-    throw new Error(`${envVar} is not set in .env file`);
+      throw new Error(`${envVar} is not set`);
   }
-}
+});
 
 const CHAIN = baseSepolia;
 const SPLIT_ADDRESS = '0xF2Abb62eE4A2A658a5b01217fa39E61E889a5a47';
@@ -59,16 +59,16 @@ async function createSplitContract() {
   return response;
 }
 
-async function getSplitBalance(address: string) {
+async function getSplitBalance() {
   const args = {
-    splitAddress: address,
+    splitAddress: SPLIT_ADDRESS,
     token: zeroAddress, //ETH
   }
 
   const response = await splitsClient.getSplitBalance(args);
   const balance = response.balance;
   const formattedBalance = formatEther(balance);
-  console.log(`The balance of the address ${address} is ${formattedBalance} Ether`);
+  console.log(`The balance of the address ${SPLIT_ADDRESS} is ${formattedBalance} Ether`);
 }
 
 // Must be called before withdrawFunds
@@ -120,10 +120,10 @@ async function getAccountBalance(address: string) {
 
 async function main() {
   //await createSplitContract();
-  //await getSplitBalance(SPLIT_ADDRESS);
-  await getAccountBalance('0x01BF49D75f2b73A2FDEFa7664AEF22C86c5Be3df');
+  await getSplitBalance();
+  //await getAccountBalance('0x01BF49D75f2b73A2FDEFa7664AEF22C86c5Be3df');
   //await distributeToken('0x01BF49D75f2b73A2FDEFa7664AEF22C86c5Be3df');
-  await withdrawFunds('0x01BF49D75f2b73A2FDEFa7664AEF22C86c5Be3df');
+  //await withdrawFunds('0x01BF49D75f2b73A2FDEFa7664AEF22C86c5Be3df');
   //await distributeAndWithdrawForAll();
   //await getAccountBalance(account.address);
   await getAccountBalance('0x01BF49D75f2b73A2FDEFa7664AEF22C86c5Be3df');
